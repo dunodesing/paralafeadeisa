@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Mi Mejor Amiga ♥</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #ffeef8 0%, #f0e6ff 100%);
+            overflow-x: hidden;
+        }
+        .font-handwritten {
+            font-family: 'Caveat', cursive;
+        }
+        /* Animación de flotado suave para la polaroid */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(-1deg); }
+            50% { transform: translateY(-10px) rotate(1deg); }
+            100% { transform: translateY(0px) rotate(-1deg); }
+        }
+        .floating-card {
+            animation: float 6s ease-in-out infinite;
+        }
+        /* Efectos para los corazones que suben */
+        .heart-particle {
+            position: absolute;
+            pointer-events: none;
+            animation: floatUp 4s linear forwards;
+        }
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) scale(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1.5) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        /* Estilo para la carta interactiva */
+        .letter-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.8s ease-out;
+        }
+        .letter-content.open {
+            max-height: 1000px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-between relative pb-12">
+
+    <!-- Capa de fondo para los corazones interactivos -->
+    <div id="hearts-container" class="fixed inset-0 pointer-events-none z-50 overflow-hidden"></div>
+
+    <!-- Encabezado Principal -->
+    <header class="w-full max-w-2xl px-6 pt-8 text-center z-10">
+        <div class="inline-flex items-center justify-center p-3 bg-white/80 backdrop-blur-md rounded-full shadow-lg border border-pink-100 mb-4 animate-bounce">
+            <i data-lucide="heart" class="w-8 h-8 text-pink-500 fill-pink-500"></i>
+        </div>
+        <h1 class="text-3xl md:text-5xl font-bold text-indigo-950 tracking-tight">
+            Para mi <span class="text-pink-600 font-handwritten text-4xl md:text-6xl">mejor amiga</span>
+        </h1>
+        <p class="text-sm md:text-base text-indigo-900/70 mt-2 font-medium">Un pequeño espacio que creé para recordarte lo mucho que vales.</p>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="w-full max-w-lg px-6 my-8 flex flex-col items-center gap-8 z-10">
+
+        <!-- Tu Foto Estilo Polaroid -->
+        <div class="floating-card bg-white p-4 pb-6 rounded-lg shadow-xl border border-gray-100/50 w-full max-w-sm transition-transform duration-300 hover:scale-[1.02]">
+            <div class="relative rounded overflow-hidden bg-pink-50 aspect-[3/4] flex items-center justify-center border border-gray-100">
+                <!-- Se coloca la imagen exacta subida por el usuario con un fallback elegante -->
+                <img 
+                    src="WhatsApp Image 2026-07-01 at 11.03.44 PM.jpeg" 
+                    alt="Nosotros" 
+                    class="w-full h-full object-cover"
+                    onerror="this.style.display='none'; document.getElementById('image-fallback').classList.remove('hidden');"
+                />
+                <!-- Fallback en caso de que la imagen local no cargue en algún preview temporal -->
+                <div id="image-fallback" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-tr from-pink-200 to-indigo-200 p-6 text-center">
+                    <i data-lucide="image" class="w-16 h-16 text-pink-500 mb-2"></i>
+                    <p class="text-indigo-950 font-semibold text-lg">Nuestra Foto</p>
+                    <p class="text-indigo-900/60 text-xs mt-1">¡Aquí aparecerá nuestra hermosa foto juntos cuando abras el archivo localmente!</p>
+                </div>
+            </div>
+            <div class="mt-4 text-center">
+                <p class="font-handwritten text-3xl text-pink-600">¡Momentos invaluables!</p>
+                <p class="text-xs text-gray-400 mt-1">Siempre juntos, pase lo que pase.</p>
+            </div>
+        </div>
+
+        <!-- Promesa e Mensaje de Apoyo Principal (El Mensaje que solicitaste) -->
+        <div class="bg-white/80 backdrop-blur-md p-6 rounded-2xl shadow-lg border border-pink-100 w-full text-center">
+            <h2 class="text-xl font-bold text-indigo-950 flex items-center justify-center gap-2 mb-3">
+                <i data-lucide="sparkles" class="text-amber-500 w-5 h-5"></i>
+                Mi promesa para ti
+                <i data-lucide="sparkles" class="text-amber-500 w-5 h-5"></i>
+            </h2>
+            <p class="text-indigo-900/80 leading-relaxed text-sm md:text-base">
+                Quiero que cuando abras esta página recuerdes que <strong class="text-pink-600 font-bold">tu mejor amigo siempre estará contigo</strong>, apoyándote en cada paso que des, celebrando tus alegrías y sosteniéndote en tus días grises. No importa el momento, el lugar ni las circunstancias... <strong>¡aquí me tienes para todo!</strong>
+            </p>
+        </div>
+
+        <!-- Carta Interactiva -->
+        <div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-pink-100 w-full overflow-hidden">
+            <button 
+                onclick="toggleLetter()" 
+                class="w-full p-5 flex items-center justify-between text-left font-bold text-indigo-950 hover:bg-pink-50/50 transition-colors"
+            >
+                <span class="flex items-center gap-3">
+                    <i id="envelope-icon" data-lucide="mail" class="w-6 h-6 text-pink-500 transition-transform"></i>
+                    <span>Toca para abrir mi carta</span>
+                </span>
+                <i id="chevron-icon" data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform duration-300"></i>
+            </button>
+            <div id="letter" class="letter-content px-6 pb-6 text-sm text-indigo-950/80 leading-relaxed space-y-3">
+                <hr class="border-pink-100 mb-3" />
+                <p class="font-semibold text-pink-600 font-handwritten text-2xl">Hola, mi mejor amiga favorita:</p>
+                <p>
+                    A veces la vida se pone un poco ajetreada o difícil, y por eso quise regalarte este rinconcito digital. Es un recordatorio permanente que puedes abrir a cualquier hora del día y de la noche.
+                </p>
+                <p>
+                    Admiro muchísimo tu fuerza, tu forma de ver el mundo y el gran corazón que tienes. Nunca olvides lo increíblemente valiosa que eres. Si te sientes sola, mira la foto de arriba y recuerda que tienes a un mejor amigo listo para escucharte, hacer locuras contigo o simplemente estar en silencio a tu lado.
+                </p>
+                <p class="font-semibold text-right text-pink-600 font-handwritten text-2xl mt-4">Con todo mi cariño, tu mejor amigo. 🐻</p>
+            </div>
+        </div>
+
+        <!-- Botones de Estado de Ánimo (Interactivos) -->
+        <div class="bg-white/80 backdrop-blur-md p-6 rounded-2xl shadow-lg border border-pink-100 w-full text-center">
+            <h3 class="text-md font-bold text-indigo-950 mb-3 flex items-center justify-center gap-2">
+                <i data-lucide="smile" class="text-pink-500 w-5 h-5"></i>
+                ¿Cómo te sientes hoy?
+            </h3>
+            <p class="text-xs text-indigo-900/60 mb-4">Elige un botoncito para darte un mensajito instantáneo:</p>
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="getMoodMessage('triste')" class="p-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-900 text-xs rounded-xl font-semibold transition-colors flex items-center justify-center gap-2">
+                    😢 Triste
+                </button>
+                <button onclick="getMoodMessage('cansada')" class="p-2.5 bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs rounded-xl font-semibold transition-colors flex items-center justify-center gap-2">
+                    🤯 Estresada
+                </button>
+                <button onclick="getMoodMessage('aburrida')" class="p-2.5 bg-green-50 hover:bg-green-100 text-green-900 text-xs rounded-xl font-semibold transition-colors flex items-center justify-center gap-2">
+                    🥱 Aburrida
+                </button>
+                <button onclick="getMoodMessage('especial')" class="p-2.5 bg-pink-50 hover:bg-pink-100 text-pink-900 text-xs rounded-xl font-semibold transition-colors flex items-center justify-center gap-2">
+                    ✨ Un recordatorio
+                </button>
+            </div>
+            
+            <!-- Contenedor del Mensaje Dinámico -->
+            <div id="mood-response-box" class="hidden mt-4 p-4 bg-pink-50/50 border border-pink-100 rounded-xl animate-fade-in">
+                <p id="mood-response-text" class="text-sm text-indigo-950 italic"></p>
+            </div>
+        </div>
+
+        <!-- Caja de Botones de Interacción Extra -->
+        <div class="flex flex-col sm:flex-row gap-3 w-full">
+            <!-- Botón Lluvia de Corazones -->
+            <button 
+                onclick="burstHearts()" 
+                class="flex-1 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-semibold py-3 px-6 rounded-full shadow-lg hover:from-pink-600 hover:to-rose-600 active:scale-95 transition-all flex items-center justify-center gap-2"
+            >
+                <i data-lucide="heart-handshake" class="w-5 h-5"></i>
+                ¡Enviarte un abrazo!
+            </button>
+
+            <!-- Reproductor Musical Simbólico con Audio Real (Web Audio API) -->
+            <button 
+                id="music-btn"
+                onclick="toggleCozyMusic()" 
+                class="flex-1 bg-indigo-950 text-white font-semibold py-3 px-6 rounded-full shadow-lg hover:bg-indigo-900 active:scale-95 transition-all flex items-center justify-center gap-2"
+            >
+                <i id="music-icon" data-lucide="play" class="w-5 h-5"></i>
+                <span id="music-text">Escuchar melodía dulce</span>
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Pie de página cariñoso -->
+    <footer class="text-center z-10 px-6 mt-4">
+        <p class="text-xs text-indigo-950/40">Hecho con todo el cariño del mundo por tu mejor amigo.</p>
+        <p class="text-[10px] text-pink-400 mt-1">2026 • Siempre juntos</p>
+    </footer>
+
+    <!-- Logica Interactiva -->
+    <script>
+        // Inicializar iconos
+        lucide.createIcons();
+
+        // 1. Mostrar/Ocultar Carta
+        function toggleLetter() {
+            const letter = document.getElementById('letter');
+            const chevron = document.getElementById('chevron-icon');
+            const envelope = document.getElementById('envelope-icon');
+            
+            letter.classList.toggle('open');
+            
+            if (letter.classList.contains('open')) {
+                chevron.style.transform = 'rotate(180deg)';
+                envelope.style.transform = 'scale(1.2)';
+                // Re-inicializar iconos por si cambian de estado
+                envelope.setAttribute('data-lucide', 'mail-open');
+            } else {
+                chevron.style.transform = 'rotate(0deg)';
+                envelope.style.transform = 'scale(1)';
+                envelope.setAttribute('data-lucide', 'mail');
+            }
+            lucide.createIcons();
+        }
+
+        // 2. Mensajes Interactivos de Estado de Ánimo
+        const messages = {
+            triste: "Sé que tienes días difíciles, pero recuerda que eres extremadamente fuerte. Tómate un respiro, no tienes que poder con todo hoy. Yo estoy aquí para escucharte y darte el abrazo más gigante del universo virtual. ¡Saldremos de esta como siempre! ❤️",
+            cansada: "¡Uf, respira hondo! 🧘‍♀️ El mundo puede esperar un ratito. Cierra los ojos por un minuto, relaja los hombros y recuerda que estoy increíblemente orgulloso de todo lo que te esfuerzas. ¡Eres mi heroína!",
+            aburrida: "¿Aburrida? 👀 ¡Escríbeme ya mismo! Acuérdate de cuando nos tomamos esta foto de arriba, o de alguna de nuestras locuras cotidianas. Siempre tengo un chiste malo o una anécdota tonta guardada para sacarte una sonrisa.",
+            especial: "Solo pasaba por aquí para recordarte que eres la mejor amiga que cualquiera desearía tener. Tu alegría ilumina cualquier lugar y me alegro tanto de coincidir contigo en esta vida. ¡Nunca lo olvides! ✨👑"
+        };
+
+        function getMoodMessage(mood) {
+            const box = document.getElementById('mood-response-box');
+            const text = document.getElementById('mood-response-text');
+            
+            text.textContent = messages[mood];
+            box.classList.remove('hidden');
+            box.classList.add('animate-pulse');
+            
+            setTimeout(() => {
+                box.classList.remove('animate-pulse');
+            }, 1000);
+
+            // Genera también unos corazones decorativos al hacer click
+            createHeart();
+        }
+
+        // 3. Efecto de Lluvia de Corazones al hacer clic
+        function createHeart() {
+            const container = document.getElementById('hearts-container');
+            const heart = document.createElement('div');
+            heart.classList.add('heart-particle', 'text-pink-500');
+            
+            // Emojis y colores variados de corazones
+            const heartIcons = ['❤️', '💖', '✨', '🌸', '💕', '🧸'];
+            heart.innerHTML = heartIcons[Math.floor(Math.random() * heartIcons.length)];
+            
+            // Posicionamiento aleatorio
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+            
+            // Duración aleatoria
+            const duration = Math.random() * 2 + 2; // 2s a 4s
+            heart.style.animationDuration = duration + 's';
+            
+            container.appendChild(heart);
+            
+            // Limpieza
+            setTimeout(() => {
+                heart.remove();
+            }, duration * 1000);
+        }
+
+        function burstHearts() {
+            for (let i = 0; i < 25; i++) {
+                setTimeout(createHeart, i * 80);
+            }
+        }
+
+        // 4. Música de fondo sintetizada (Web Audio API)
+        // Crea una tierna melodía de piano/caja de música para evitar problemas de copyright de archivos locales.
+        let audioCtx = null;
+        let musicPlaying = false;
+        let melodyInterval = null;
+
+        function toggleCozyMusic() {
+            const btnText = document.getElementById('music-text');
+            const btnIcon = document.getElementById('music-icon');
+
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            if (musicPlaying) {
+                // Detener melodía
+                clearInterval(melodyInterval);
+                btnText.textContent = "Escuchar melodía dulce";
+                btnIcon.setAttribute('data-lucide', 'play');
+                musicPlaying = false;
+            } else {
+                // Iniciar hermosa melodía ambiental (Notas de arpa/piano)
+                const notes = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25]; // Escala de Do Mayor
+                const sweetChords = [
+                    [329.63, 392.00, 523.25], // Do Mayor (Invertido)
+                    [349.23, 440.00, 523.25], // Fa Mayor
+                    [392.00, 493.88, 587.33], // Sol Mayor
+                    [329.63, 440.00, 523.25]  // La menor
+                ];
+
+                let chordIndex = 0;
+                let noteStep = 0;
+
+                // Función para tocar una nota suave
+                function playTone(freq, duration, type = 'sine', volume = 0.08) {
+                    if (!audioCtx) return;
+                    
+                    const osc = audioCtx.createOscillator();
+                    const gainNode = audioCtx.createGain();
+                    
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                    
+                    // Ataque y decaimiento suave para sonar como campanas / piano
+                    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(volume, audioCtx.currentTime + 0.1);
+                    gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+                    
+                    osc.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+                    
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + duration);
+                }
+
+                // Loop musical relajante
+                melodyInterval = setInterval(() => {
+                    // Tocar una nota de fondo del acorde cada 1.5s
+                    const currentChord = sweetChords[chordIndex];
+                    const noteToPlay = currentChord[noteStep % currentChord.length];
+                    
+                    // Nota suave tipo campana (senoidal)
+                    playTone(noteToPlay, 2.5, 'sine', 0.07);
+
+                    // Pequeño arpegio agudo decorativo de vez en cuando
+                    if (noteStep % 2 === 0) {
+                        setTimeout(() => {
+                            const highNote = noteToPlay * 2; // Octava arriba
+                            playTone(highNote, 1.5, 'sine', 0.03);
+                        }, 400);
+                    }
+
+                    noteStep++;
+                    if (noteStep % 4 === 0) {
+                        chordIndex = (chordIndex + 1) % sweetChords.length;
+                    }
+                    
+                    // Crear un corazón sutil al ritmo de la música
+                    createHeart();
+
+                }, 1200);
+
+                btnText.textContent = "Melodía sonando... ♥";
+                btnIcon.setAttribute('data-lucide', 'square');
+                musicPlaying = true;
+            }
+            lucide.createIcons();
+        }
+
+        // Lanzar una pequeña ráfaga de corazones inicial al cargar
+        window.onload = function() {
+            setTimeout(burstHearts, 1000);
+        };
+    </script>
+</body>
+</html>
